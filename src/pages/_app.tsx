@@ -1,11 +1,15 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
-import Layout from "../components/layout";
+import Layout from "../widgets/components/layout";
+import { wrapper } from '@/shared/lib/store/store';
 
-export default function App({ Component, pageProps }: AppProps) {
+
+function App({ Component, pageProps }: AppProps): JSX.Element {
   return (
       <Layout>
         <Component {...pageProps}/>
       </Layout>
   )
 }
+
+export default wrapper.withRedux(App)
