@@ -8,27 +8,29 @@ const initialState: UserState = {
 }
 
 export const userReducer = (state = initialState, action: FetchUserAction) => {
-    if (action.type === UserActionTypes.FETCH_USER_REQUEST) {
-        return {...state, data: [], isLoading: true};
-    } else if (action.type === UserActionTypes.FETCH_USER_SUCCESS) {
-        return {...state, data: action.payload, isLoading: false};
-    } else if (action.type === UserActionTypes.FETCH_USER_FAILURE) {
-        return {...state, error: action.payload, isLoading: false};
-    } else if (action.type === UserActionTypes.ADD_USER_REQUEST) {
-        return {...state, isLoading: true};
-    } else if (action.type === UserActionTypes.ADD_USER_SUCCESS) {// Выполните запрос на сервер, чтобы получить обновленный список пользователей
-        axios.get('/api/users')
-            .then(response => {
-                // Обновите состояние вашего приложения с помощью нового списка пользователей
-                return {...state, data: response.data, isLoading: false};
-            })
-            .catch(error => {
-                return {...state, error: error.message, isLoading: false};
-            });
-        return {...state, isLoading: false};
-    } else if (action.type === UserActionTypes.ADD_USER_FAILURE) {
-        return {...state, isLoading: false};
-    } else {
-        return state;
+    switch (action.type) {
+        case  UserActionTypes.FETCH_USER_REQUEST:
+            return {...state, data: [], isLoading: true};
+        case UserActionTypes.FETCH_USER_SUCCESS:
+            return {...state, data: action.payload, isLoading: false};
+        case UserActionTypes.FETCH_USER_FAILURE:
+            return {...state, error: action.payload, isLoading: false};
+        case UserActionTypes.ADD_USER_REQUEST:
+            return {...state, isLoading: true};
+        case UserActionTypes.ADD_USER_SUCCESS:
+            axios.get('/api/users')                 // запрос на сервер с новым списком пользователей
+                .then(response => {
+                                                        // Обновление состояния приложения с помощью нового списка пользователей
+                    return {...state, data: response.data, isLoading: false};
+                })
+                .catch(error => {
+                    return {...state, error: error.message, isLoading: false};
+                });
+            return {...state, isLoading: false};
+        case UserActionTypes.ADD_USER_FAILURE:
+            return {...state, isLoading: false};
+        default:
+            return state;
+
     }
-};
+}
